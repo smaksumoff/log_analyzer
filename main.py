@@ -29,9 +29,12 @@ def parse_args() -> tuple[list[str], str]:
         raise ValueError(f"Error: Invalid report type. Available types: {', '.join(REPORTS.keys())}.")
 
     # Check for file existence
-    for log_file in logs:
-        if not os.path.isfile(log_file):
-            raise FileNotFoundError(f"Error: File {log_file} does not exist or is not accessible.")
+    missing_files = [log_file for log_file in logs if not os.path.isfile(log_file)]
+    if missing_files:
+        raise FileNotFoundError(
+            "Error: The following log files do not exist or are not accessible: "
+            + ", ".join(missing_files)
+        )
 
     return logs, report_type
 
